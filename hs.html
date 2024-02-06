@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="hs.css">
+</head>
+<body>
+    <div class="sidebar" style="position: fixed; top: 0;">
+        <div class="top">
+            <div class="logo">
+                <i class ="bx bxl-codepen"></i>
+                <span>Assiut Weather</span>
+            </div>
+            <i class="bx bx-menu" id="btn"></i>
+        </div> 
+        <div class="user">
+            <img src="cloud.jpg" alt="" class="user-img">
+            <div>
+                <p class="bold">Weather App</p>
+            </div>
+        </div>
+        <ul>
+            <li>
+                <a href="hs.html">
+                    <i class="bx bx-home bx-border"></i>
+                    <span class="nav-item">Home</span>
+                </a>
+                <span class="tooltip">Home</span>
+            </li>
+            <li>
+                <a href="Chart.html">
+                    <i class="bx bx-chart bx-border"></i>
+                    <span class="nav-item">Visualization</span>
+                </a>
+                <span class="tooltip">Visualization</span>
+            </li><li>
+                <a href="Data.html">
+                    <i class="bx bx-data bx-border"></i>
+                    <span class="nav-item">Historical Data</span>
+                </a>
+                <span class="tooltip">Historical Data</span>
+            </li><li>
+                <a href="Forecast.html">
+                    
+                    <i class="bx bxs-cloud-lightning bx-border"></i>
+                    <span class="nav-item">Forecast</span>
+                </a>
+                <span class="tooltip">Forecast</span>
+            </li>
+            <li>
+                <a href="Teamwork.html">
+                    <i class="bx bxs-group bx-border"></i>
+                    <span class="nav-item">Teamwork</span>
+                </a>
+                <span class="tooltip">Teamwork</span>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <div class="container" style=" height:100vh;background-image: url(cloudy-weather-with-palm-tree-c4pzuybo1zlqcydt.jpg);background-size: cover; background-position: center;">
+            
+            <!-- <h1>&nbspAssiut Weather</h1> -->
+            <div class="container mt-3" >
+                <div id="lastRowDataContainer" style="border: 1px;background-color: rgba(64, 96, 148, 0.575); color: rgb(255, 255, 255); width: 50%;border-radius: 20px;text-align: center;margin-left: 20%;font-size: 20px;height: 40%;padding: 10px;word-spacing: 5px;line-height: 2.5;font-weight: bold;"></div>
+            </div>
+           
+        
+            <script type="module">
+                // Import the functions you need from the SDKs you need
+                import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+                import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
+                import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        
+                // Your web app's Firebase configuration
+                // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+               const firebaseConfig = {
+              apiKey: "AIzaSyBJ1ktYgQ5h-SHg0r5tvOfELQU8MnKcXps",
+              authDomain: "dhtdata-171c6.firebaseapp.com",
+              databaseURL: "https://dhtdata-171c6-default-rtdb.firebaseio.com",
+              projectId: "dhtdata-171c6",
+              storageBucket: "dhtdata-171c6.appspot.com",
+              messagingSenderId: "780334007542",
+              appId: "1:780334007542:web:80728b9350d9412e2058d7"
+            };
+        
+                // Initialize Firebase
+                const app = initializeApp(firebaseConfig);
+                const analytics = getAnalytics(app);
+        
+                const db = getDatabase();
+        
+                var lastRowDataContainer = document.getElementById('lastRowDataContainer');
+        
+                function displayLastRowData(row) {
+                    lastRowDataContainer.innerHTML = `
+                      
+                        <p>Date : ${row.Date}</p>
+                        <p>Humidity : ${row.Humidity}</p>
+                        <p>RainDrop : ${row.RainDrop}</p>
+                        <p>Temperature : ${row.Temperature}</p>
+                        <p>Time : ${row.Time}</p>
+                    `;
+                }
+        
+                function getAuto() {
+                    const dbRef = ref(db, "Weather Data");
+        
+                    get(dbRef).then((snapshot) => {
+                        var wrows = [];
+        
+                        snapshot.forEach(childSnapshot => {
+                            wrows.push(childSnapshot.val());
+                        });
+        
+                        // Sort the data based on the "Date" parameter
+                        wrows.sort((a, b) => new Date(a.Date) - new Date(b.Date));
+        
+                        // Display data of the last row
+                        const lastRow = wrows[wrows.length - 1];
+                        displayLastRowData(lastRow);
+                    });
+                }
+        
+                window.onload = function () {
+                    getAuto();
+                };
+            </script>
+          
+        </div>
+        
+    </div>
+</body>
+<script>
+    let btn = document.querySelector('#btn')
+    let sidebar = document.querySelector('.sidebar')
+
+    btn.onclick = function (){
+        //toggle(token: string,force?: boolean):boolean
+        sidebar.classList.toggle('active')
+    };
+</script>
+</html>
